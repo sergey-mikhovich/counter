@@ -1,0 +1,17 @@
+button {
+    background-color: deepskyblue;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.2em 0.8em;
+    border-radius: 8px;
+    color: black;
+}
+
+button:disabled {
+    opacity: 0.5;
+}
+
+button:hover {
+    border-color: #646cff;
+}

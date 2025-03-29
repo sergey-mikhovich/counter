@@ -1,0 +1,26 @@
+.display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: deepskyblue;
+    border-radius: 15px;
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.display-prompt {
+    color: deepskyblue;
+    font-weight: normal;
+    font-size: 30px;
+}
+
+.display-error {
+    color: red;
+    font-weight: normal;
+    font-size: 30px;
+}
+
+.display-redColor {
+    color: red;
+}

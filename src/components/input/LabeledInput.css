@@ -1,0 +1,25 @@
+.inputContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px
+}
+
+.inputContainer-label {
+    color: deepskyblue;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.inputContainer-input {
+    border-radius: 5px;
+    height: 30px;
+    outline: none;
+    border: 3px solid deepskyblue;
+    text-align: center;
+    font-weight: bold;
+}
+
+.inputContainer-input-error {
+    border: 3px solid red;
+    background-color: #ffb2b2;
+}

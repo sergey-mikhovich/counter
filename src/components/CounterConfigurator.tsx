@@ -10,7 +10,7 @@ type Props = {
     startValue: string,
     setStartValue: (value: string) => void,
     onInputError: (value: boolean) => void,
-    onSet: (startValue: string, maxValue: string) => void,
+    onSet: (startValue: string, maxValue: string) => void
 }
 
 export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxValue, setStartValue, onSet}: Props) => {

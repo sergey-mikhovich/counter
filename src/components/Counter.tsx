@@ -4,15 +4,18 @@ import {Button} from "./button/Button.tsx";
 import {useEffect, useState} from "react";
 import "../App.css"
 import "../components/display/Display.css"
+import {CounterMode} from "../CounterModeChooser.tsx";
 
 type Props = {
     startValue: string;
     maxValue: string;
     isInputCompleted: boolean;
     isInputError: boolean;
+    onSet: () => void;
+    mode: CounterMode;
 }
 
-export const Counter = ({startValue, maxValue, isInputError, isInputCompleted}: Props) => {
+export const Counter = ({startValue, maxValue, isInputError, isInputCompleted, onSet, mode}: Props) => {
     const [counterValue, setCounterValue] = useState<number>(0);
 
     useEffect(() => {
@@ -56,6 +59,7 @@ export const Counter = ({startValue, maxValue, isInputError, isInputCompleted}: 
             <Frame classNames={"counter-buttons"}>
                 <Button disabled={disableIncrementButton} name={"inc"} onClick={increment}/>
                 <Button disabled={disableDecrementButton} name={"reset"} onClick={reset}/>
+                { mode === "advanced" && <Button name={"set"} onClick={onSet}/> }
             </Frame>
         </Frame>
     )

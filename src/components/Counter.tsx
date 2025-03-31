@@ -4,7 +4,7 @@ import {Button} from "./button/Button.tsx";
 import {useEffect, useState} from "react";
 import "../App.css"
 import "../components/display/Display.css"
-import {CounterMode} from "../CounterModeChooser.tsx";
+import {CounterMode} from "./CounterModeChooser.tsx";
 
 type Props = {
     startValue: string;
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const Counter = ({startValue, maxValue, isInputError, isInputCompleted, onSet, mode}: Props) => {
-    const [counterValue, setCounterValue] = useState<number>(0);
+    const [counterValue, setCounterValue] = useState(0);
 
     useEffect(() => {
         if (isInputCompleted) {

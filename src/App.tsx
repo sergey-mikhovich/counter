@@ -1,30 +1,59 @@
 import './App.css'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {CounterConfigurator} from "./components/CounterConfigurator.tsx";
 import {Counter} from "./components/Counter.tsx";
-import CounterModeChooser, {CounterMode} from "./CounterModeChooser.tsx";
+import CounterModeChooser, {CounterMode} from "./components/CounterModeChooser.tsx";
+
+const MAX_VALUE_KEY = "max_value_key"
+const START_VALUE_KEY = "start_value_key"
 
 function App() {
-    const [maxValue, setMaxValue] = useState<string>("");
-    const [startValue, setStartValue] = useState<string>("");
-    const [isInputError, setIsInputError] = useState<boolean>(false);
-    const [isInputCompleted, setIsInputCompleted] = useState<boolean>(false);
+    const [maxValue, setMaxValue] = useState("");
+    const [startValue, setStartValue] = useState("");
+    const [isInputError, setIsInputError] = useState(false);
+    const [isInputCompleted, setIsInputCompleted] = useState(false);
     const [mode, setMode] = useState<CounterMode>("unset");
-    const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    useEffect(() => {
+        const maxValue = localStorage.getItem(MAX_VALUE_KEY)
+        const startValue = localStorage.getItem(START_VALUE_KEY)
+
+        if (maxValue) {
+            setMaxValue(maxValue);
+        }
+
+        if (startValue) {
+            setStartValue(startValue);
+        }
+
+        if (maxValue && startValue) {
+            setIsInputCompleted(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isInputCompleted) {
+            localStorage.setItem(MAX_VALUE_KEY, maxValue)
+            localStorage.setItem(START_VALUE_KEY, startValue)
+        }
+    }, [isInputCompleted]);
 
     function onSetCounterMode(value: CounterMode) {
         setMode(value);
     }
 
-    function onOpenSettings() {
-        setIsSettingsOpen(true);
+    function onSettingsChanged(value: boolean) {
+        if (mode === "advanced") {
+            setIsSettingsOpen(value)
+        }
     }
 
     function onSet(startValue: string, maxValue: string) {
         setStartValue(startValue)
         setMaxValue(maxValue)
         setIsInputCompleted(true);
-        setIsSettingsOpen(false);
+        onSettingsChanged(false)
     }
 
     function onChangeMaxValue(value: string) {
@@ -41,39 +70,16 @@ function App() {
         setIsInputError(value)
     }
 
-    switch (mode) {
-        case "unset": {
-            return <CounterModeChooser onSetCounterMode={onSetCounterMode}/>
-        }
-        case "advanced": {
-            return (
-                <div className={"appContainer"}>
-                    {
-                        isSettingsOpen &&
-                        <CounterConfigurator
-                            maxValue={maxValue}
-                            setMaxValue={onChangeMaxValue}
-                            startValue={startValue}
-                            setStartValue={onChangeStartValue}
-                            onInputError={changeInputError}
-                            onSet={onSet}/>
-                    }
-                    {
-                        !isSettingsOpen &&
-                        <Counter
-                            isInputCompleted={isInputCompleted}
-                            isInputError={isInputError}
-                            maxValue={maxValue}
-                            startValue={startValue}
-                            onSet={onOpenSettings}
-                            mode={mode}/>
-                    }
-                </div>
-            )
-        }
-        default: {
-            return (
-                <div className={"appContainer"}>
+
+    if (mode === "unset") {
+        return <CounterModeChooser onSetCounterMode={onSetCounterMode}/>
+    }
+
+    if (mode === "advanced") {
+        return (
+            <div className={"appContainer"}>
+                {
+                    isSettingsOpen &&
                     <CounterConfigurator
                         maxValue={maxValue}
                         setMaxValue={onChangeMaxValue}
@@ -81,17 +87,39 @@ function App() {
                         setStartValue={onChangeStartValue}
                         onInputError={changeInputError}
                         onSet={onSet}/>
+                }
+                {
+                    !isSettingsOpen &&
                     <Counter
                         isInputCompleted={isInputCompleted}
                         isInputError={isInputError}
                         maxValue={maxValue}
                         startValue={startValue}
-                        onSet={onOpenSettings}
+                        onSet={() => onSettingsChanged(true)}
                         mode={mode}/>
-                </div>
-            )
-        }
+                }
+            </div>
+        )
     }
+
+    return (
+        <div className={"appContainer"}>
+            <CounterConfigurator
+                maxValue={maxValue}
+                setMaxValue={onChangeMaxValue}
+                startValue={startValue}
+                setStartValue={onChangeStartValue}
+                onInputError={changeInputError}
+                onSet={onSet}/>
+            <Counter
+                isInputCompleted={isInputCompleted}
+                isInputError={isInputError}
+                maxValue={maxValue}
+                startValue={startValue}
+                onSet={() => onSettingsChanged(true)}
+                mode={mode}/>
+        </div>
+    )
 }
 
 export default App

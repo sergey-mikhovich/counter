@@ -40,7 +40,7 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
 
     useEffect(() => {
         if (startValue || maxValue) {
-            onValidate(Number(startValue), Number(maxValue))
+            onValidate(JSON.parse(startValue), JSON.parse(maxValue))
         }
     }, [startValue, maxValue, onValidate])
 

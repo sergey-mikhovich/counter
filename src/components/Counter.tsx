@@ -20,29 +20,29 @@ export const Counter = ({startValue, maxValue, isInputError, isInputCompleted, o
 
     useEffect(() => {
         if (isInputCompleted) {
-            setCounterValue(Number(startValue))
+            setCounterValue(JSON.parse(startValue))
         }
     }, [startValue, isInputCompleted]);
 
     function increment() {
-        if (counterValue < Number(maxValue)) {
+        if (counterValue < JSON.parse(maxValue)) {
             setCounterValue(counterValue + 1)
         }
     }
 
     function reset() {
-        setCounterValue(Number(startValue))
+        setCounterValue(JSON.parse(startValue))
     }
 
     const disableAllButtons = !isInputCompleted || isInputError;
 
-    const disableIncrementButton = disableAllButtons || (counterValue === Number(maxValue));
-    const disableDecrementButton = disableAllButtons || (counterValue === Number(startValue));
+    const disableIncrementButton = disableAllButtons || (counterValue === JSON.parse(maxValue));
+    const disableDecrementButton = disableAllButtons || (counterValue === JSON.parse(startValue));
 
     const error = isInputError ? "Incorrect value!" : ""
     const prompt = !isInputCompleted ? "Enter values and press SET" : ""
     const value = startValue ? String(counterValue) : startValue
-    const maxValueReached = maxValue && counterValue === Number(maxValue);
+    const maxValueReached = maxValue && counterValue === JSON.parse(maxValue);
 
     const displayClasses = [
         "counter-display",

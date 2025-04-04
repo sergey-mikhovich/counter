@@ -1,5 +1,5 @@
 import './App.css'
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {CounterConfigurator} from "./components/CounterConfigurator.tsx";
 import {Counter} from "./components/Counter.tsx";
 import CounterModeChooser, {CounterMode} from "./components/CounterModeChooser.tsx";
@@ -39,36 +39,36 @@ function App() {
         }
     }, [isInputCompleted]);
 
-    function onSetCounterMode(value: CounterMode) {
+    const onSetCounterMode = useCallback((value: CounterMode) => {
         setMode(value);
-    }
+    }, [])
 
-    function onSettingsChanged(value: boolean) {
+    const onSettingsChanged = useCallback((value: boolean) => {
         if (mode === "advanced") {
             setIsSettingsOpen(value)
         }
-    }
+    }, [mode])
 
-    function onSet(startValue: string, maxValue: string) {
+    const onSet = useCallback((startValue: string, maxValue: string) => {
         setStartValue(startValue)
         setMaxValue(maxValue)
         setIsInputCompleted(true);
         onSettingsChanged(false)
-    }
+    }, [onSettingsChanged])
 
-    function onChangeMaxValue(value: string) {
+    const onChangeMaxValue = useCallback((value: string) => {
         setMaxValue(value);
         setIsInputCompleted(false);
-    }
+    }, [])
 
-    function onChangeStartValue(value: string) {
+    const onChangeStartValue = useCallback((value: string) => {
         setStartValue(value);
         setIsInputCompleted(false)
-    }
+    }, [])
 
-    function changeInputError(value: boolean) {
+    const changeInputError = useCallback((value: boolean) => {
         setIsInputError(value)
-    }
+    }, [])
 
 
     if (mode === "unset") {

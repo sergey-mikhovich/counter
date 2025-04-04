@@ -1,5 +1,6 @@
 import "./Display.css"
 import {Frame} from "../frame/Frame.tsx";
+import * as React from "react";
 
 type Props = {
     value: string;
@@ -8,7 +9,7 @@ type Props = {
     className: string;
 }
 
-export const Display = ({value, error, prompt, className}: Props) => {
+const display = ({value, error, prompt, className}: Props) => {
     const displayClasses = [
         "display",
         error ? "display-error" : "",
@@ -21,3 +22,5 @@ export const Display = ({value, error, prompt, className}: Props) => {
         </Frame>
     );
 };
+
+export const Display = React.memo(display)

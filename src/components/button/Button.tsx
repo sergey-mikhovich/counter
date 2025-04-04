@@ -1,4 +1,5 @@
 import "./Button.css"
+import * as React from "react";
 
 type Props = {
     name: string,
@@ -6,10 +7,12 @@ type Props = {
     onClick: () => void
 }
 
-export const Button = ({name, disabled, onClick}: Props) => {
+const button = ({name, disabled, onClick}: Props) => {
     return (
         <button disabled={disabled} onClick={onClick}>
             {name}
         </button>
     );
 };
+
+export const Button = React.memo(button)

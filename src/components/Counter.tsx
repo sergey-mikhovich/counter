@@ -1,7 +1,7 @@
 import {Frame} from "./frame/Frame.tsx";
 import {Display} from "./display/Display.tsx";
 import {Button} from "./button/Button.tsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import "../App.css"
 import "../components/display/Display.css"
 import {CounterMode} from "./CounterModeChooser.tsx";
@@ -24,15 +24,15 @@ export const Counter = ({startValue, maxValue, isInputError, isInputCompleted, o
         }
     }, [startValue, isInputCompleted]);
 
-    function increment() {
+    const increment = useCallback(() => {
         if (counterValue < JSON.parse(maxValue)) {
             setCounterValue(counterValue + 1)
         }
-    }
+    }, [counterValue, maxValue])
 
-    function reset() {
+    const reset = useCallback(() => {
         setCounterValue(JSON.parse(startValue))
-    }
+    }, [startValue])
 
     const disableAllButtons = !isInputCompleted || isInputError;
 

@@ -36,7 +36,7 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
 
         onInputError(isInputError);
         setDisabledButton(isInputError)
-    }, [])
+    }, [onInputError])
 
     useEffect(() => {
         if (startValue && maxValue) {
@@ -44,15 +44,15 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
         }
     }, [startValue, maxValue, onValidate])
 
-    function onChangeMaxValue(value: string) {
+    const onChangeMaxValue = useCallback((value: string) => {
         setMaxValue(value);
-    }
+    }, [setMaxValue])
 
-    function onChangeStartValue(value: string) {
+    const onChangeStartValue = useCallback((value: string) => {
         setStartValue(value);
-    }
+    }, [setStartValue])
 
-    function onSetClick() {
+    const onSetClick = useCallback(() => {
         if (!startValue) {
             setStartValueError(true);
         }
@@ -65,7 +65,7 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
             onSet(startValue, maxValue)
             setDisabledButton(true);
         }
-    }
+    }, [startValue, maxValue, onSet])
 
     return (
         <Frame classNames={"counterConfigurator"}>

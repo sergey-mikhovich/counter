@@ -1,5 +1,6 @@
 import "./LabeledInput.css"
 import {ChangeEvent} from "react";
+import * as React from "react";
 
 type Props = {
     label: string;
@@ -8,7 +9,7 @@ type Props = {
     onChange: (value: string) => void;
 }
 
-export const LabeledInput = (props: Props) => {
+const labeledInput = (props: Props) => {
 
     function onChange(e: ChangeEvent<HTMLInputElement>) {
         props.onChange(e.target.value);
@@ -26,3 +27,5 @@ export const LabeledInput = (props: Props) => {
         </div>
     );
 };
+
+export const LabeledInput = React.memo(labeledInput)

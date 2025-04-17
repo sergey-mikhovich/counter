@@ -1,8 +1,8 @@
-import {Frame} from "./frame/Frame.tsx";
-import {Button} from "./button/Button.tsx";
+import {Frame} from "../../components/frame/Frame.tsx";
+import {Button} from "../../components/button/Button.tsx";
 import {useCallback, useEffect, useState} from "react";
-import "../App.css"
-import {LabeledInput} from "./input/LabeledInput.tsx";
+import "../../App.css"
+import {LabeledInput} from "../../components/input/LabeledInput.tsx";
 
 type Props = {
     maxValue: string,
@@ -18,29 +18,28 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
     const [maxValueError, setMaxValueError] = useState(false);
     const [startValueError, setStartValueError] = useState(false);
 
-    const onValidate = useCallback((startValue: number, maxValue: number) => {
-        if (maxValue === startValue) {
-            setMaxValueError(true);
-            setStartValueError(true);
-            setDisabledButton(true)
-            onInputError(true)
-            return
-        }
+    const onValidate = useCallback((startValue: string, maxValue: string) => {
+        const startValueMoreOrEqualThenMaxValue =
+            (startValue && maxValue) ? Number(startValue) >= Number(maxValue) : false
 
-        const isStartValueError = startValue < 0 || startValue > maxValue
-        const isMaxValueError = maxValue < 0 || maxValue < startValue
+        const maxValueLessOrEqualThenStartValue =
+            (startValue && maxValue) ? Number(maxValue) <= Number(startValue) : false
+
+        const isStartValueError = startValue ? (Number(startValue) < 0 || startValueMoreOrEqualThenMaxValue) : false
+        const isMaxValueError = maxValue ? (Number(maxValue) < 0 || maxValueLessOrEqualThenStartValue) : false
         const isInputError = isStartValueError || isMaxValueError;
+        const disabledButton = isInputError || !startValue || !maxValue
 
         setStartValueError(isStartValueError)
         setMaxValueError(isMaxValueError)
 
         onInputError(isInputError);
-        setDisabledButton(isInputError)
+        setDisabledButton(disabledButton)
     }, [onInputError])
 
     useEffect(() => {
-        if (startValue && maxValue) {
-            onValidate(JSON.parse(startValue), JSON.parse(maxValue))
+        if (startValue || maxValue) {
+            onValidate(startValue, maxValue)
         }
     }, [startValue, maxValue, onValidate])
 
@@ -53,18 +52,8 @@ export const CounterConfigurator = ({onInputError, startValue, maxValue, setMaxV
     }, [setStartValue])
 
     const onSetClick = useCallback(() => {
-        if (!startValue) {
-            setStartValueError(true);
-        }
-
-        if (!maxValue) {
-            setMaxValueError(true);
-        }
-
-        if (startValue && maxValue) {
-            onSet(startValue, maxValue)
-            setDisabledButton(true);
-        }
+        onSet(startValue, maxValue)
+        setDisabledButton(true);
     }, [startValue, maxValue, onSet])
 
     return (

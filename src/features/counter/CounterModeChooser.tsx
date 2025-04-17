@@ -1,5 +1,5 @@
-import {Button} from "./button/Button.tsx";
-import "../App.css"
+import {Button} from "../../components/button/Button.tsx";
+import "../../App.css"
 
 export type CounterMode = "normal" | "advanced" | "unset"
 

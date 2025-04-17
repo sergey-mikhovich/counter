@@ -1,73 +1,80 @@
 import './App.css'
 import {useCallback, useEffect, useState} from "react";
-import {CounterConfigurator} from "./components/CounterConfigurator.tsx";
-import {Counter} from "./components/Counter.tsx";
-import CounterModeChooser, {CounterMode} from "./components/CounterModeChooser.tsx";
-
-const MAX_VALUE_KEY = "max_value_key"
-const START_VALUE_KEY = "start_value_key"
+import {CounterConfigurator} from "./features/counter/CounterConfigurator.tsx";
+import {Counter} from "./features/counter/Counter.tsx";
+import CounterModeChooser, {CounterMode} from "./features/counter/CounterModeChooser.tsx";
+import {useAppDispatch, useAppSelector} from "./app/hooks.ts";
+import {
+    inputCompletedStatusChanged, inputErrorStatusChanged,
+    maxValueChanged, modeChanged, saveCounterStorageStateThunk,
+    selectIsInputCompleted,
+    selectIsInputError,
+    selectMaxValue, selectMode,
+    selectStartValue, startValueChanged
+} from "./features/counter/counterSlice.ts";
 
 function App() {
-    const [maxValue, setMaxValue] = useState("");
-    const [startValue, setStartValue] = useState("");
-    const [isInputError, setIsInputError] = useState(false);
-    const [isInputCompleted, setIsInputCompleted] = useState(false);
-    const [mode, setMode] = useState<CounterMode>("unset");
+    const maxValue = useAppSelector(selectMaxValue)
+    const startValue = useAppSelector(selectStartValue)
+    const isInputError = useAppSelector(selectIsInputError)
+    const isInputCompleted = useAppSelector(selectIsInputCompleted)
+    const mode = useAppSelector(selectMode)
+
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        const maxValue = localStorage.getItem(MAX_VALUE_KEY)
-        const startValue = localStorage.getItem(START_VALUE_KEY)
-
         if (maxValue) {
-            setMaxValue(maxValue);
+            dispatch(maxValueChanged(maxValue));
         }
 
         if (startValue) {
-            setStartValue(startValue);
+            dispatch(startValueChanged(startValue));
         }
 
         if (maxValue && startValue) {
-            setIsInputCompleted(true);
+            dispatch(inputCompletedStatusChanged(true));
         }
     }, []);
 
     useEffect(() => {
         if (isInputCompleted) {
-            localStorage.setItem(MAX_VALUE_KEY, maxValue)
-            localStorage.setItem(START_VALUE_KEY, startValue)
+            dispatch(saveCounterStorageStateThunk({maxValue: maxValue, startValue: startValue}))
         }
     }, [isInputCompleted]);
 
     const onSetCounterMode = useCallback((value: CounterMode) => {
-        setMode(value);
+        dispatch(modeChanged(value));
     }, [])
 
-    const onSettingsChanged = useCallback((value: boolean) => {
-        if (mode === "advanced") {
-            setIsSettingsOpen(value)
-        }
-    }, [mode])
+    const toggleSettings = useCallback(() => {
+        setIsSettingsOpen(prevState => !prevState);
+    }, [])
 
     const onSet = useCallback((startValue: string, maxValue: string) => {
-        setStartValue(startValue)
-        setMaxValue(maxValue)
-        setIsInputCompleted(true);
-        onSettingsChanged(false)
-    }, [onSettingsChanged])
+        dispatch(inputCompletedStatusChanged(true));
+        dispatch(startValueChanged(startValue))
+        dispatch(maxValueChanged(maxValue))
+        
+        if (mode === "advanced") {
+            toggleSettings()
+        }
+
+    }, [mode, toggleSettings])
 
     const onChangeMaxValue = useCallback((value: string) => {
-        setMaxValue(value);
-        setIsInputCompleted(false);
+        dispatch(inputCompletedStatusChanged(false));
+        dispatch(maxValueChanged(value));
     }, [])
 
     const onChangeStartValue = useCallback((value: string) => {
-        setStartValue(value);
-        setIsInputCompleted(false)
+        dispatch(inputCompletedStatusChanged(false));
+        dispatch(startValueChanged(value));
     }, [])
 
     const changeInputError = useCallback((value: boolean) => {
-        setIsInputError(value)
+        dispatch(inputErrorStatusChanged(value))
     }, [])
 
 
@@ -75,49 +82,28 @@ function App() {
         return <CounterModeChooser onSetCounterMode={onSetCounterMode}/>
     }
 
-    if (mode === "advanced") {
-        return (
-            <div className={"appContainer"}>
-                {
-                    isSettingsOpen &&
-                    <CounterConfigurator
-                        maxValue={maxValue}
-                        setMaxValue={onChangeMaxValue}
-                        startValue={startValue}
-                        setStartValue={onChangeStartValue}
-                        onInputError={changeInputError}
-                        onSet={onSet}/>
-                }
-                {
-                    !isSettingsOpen &&
-                    <Counter
-                        isInputCompleted={isInputCompleted}
-                        isInputError={isInputError}
-                        maxValue={maxValue}
-                        startValue={startValue}
-                        onSet={() => onSettingsChanged(true)}
-                        mode={mode}/>
-                }
-            </div>
-        )
-    }
-
     return (
         <div className={"appContainer"}>
-            <CounterConfigurator
-                maxValue={maxValue}
-                setMaxValue={onChangeMaxValue}
-                startValue={startValue}
-                setStartValue={onChangeStartValue}
-                onInputError={changeInputError}
-                onSet={onSet}/>
-            <Counter
-                isInputCompleted={isInputCompleted}
-                isInputError={isInputError}
-                maxValue={maxValue}
-                startValue={startValue}
-                onSet={() => onSettingsChanged(true)}
-                mode={mode}/>
+            {
+                ((mode === "advanced" && isSettingsOpen) || mode === "normal") &&
+                <CounterConfigurator
+                    maxValue={maxValue}
+                    setMaxValue={onChangeMaxValue}
+                    startValue={startValue}
+                    setStartValue={onChangeStartValue}
+                    onInputError={changeInputError}
+                    onSet={onSet}/>
+            }
+            {
+                ((mode === "advanced" && !isSettingsOpen) || mode === "normal") &&
+                <Counter
+                    isInputCompleted={isInputCompleted}
+                    isInputError={isInputError}
+                    maxValue={maxValue}
+                    startValue={startValue}
+                    onSet={toggleSettings}
+                    mode={mode}/>
+            }
         </div>
     )
 }

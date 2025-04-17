@@ -1,9 +1,9 @@
-import {Frame} from "./frame/Frame.tsx";
-import {Display} from "./display/Display.tsx";
-import {Button} from "./button/Button.tsx";
+import {Frame} from "../../components/frame/Frame.tsx";
+import {Display} from "../../components/display/Display.tsx";
+import {Button} from "../../components/button/Button.tsx";
 import {useCallback, useEffect, useState} from "react";
-import "../App.css"
-import "../components/display/Display.css"
+import "../../App.css"
+import "../../components/display/Display.css"
 import {CounterMode} from "./CounterModeChooser.tsx";
 
 type Props = {

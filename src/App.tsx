@@ -25,14 +25,6 @@ function App() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        if (maxValue) {
-            dispatch(maxValueChanged(maxValue));
-        }
-
-        if (startValue) {
-            dispatch(startValueChanged(startValue));
-        }
-
         if (maxValue && startValue) {
             dispatch(inputCompletedStatusChanged(true));
         }

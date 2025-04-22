@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {CounterMode} from "./CounterModeChooser.tsx";
-import {AppThunk, RootState} from "../../app/store.ts";
+import {AppThunk, RootState} from "@/app/store.ts";
 import {CounterStorageState, saveCounterStorageState} from "./localStorage.ts";
 
 export interface CounterState {

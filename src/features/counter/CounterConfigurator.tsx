@@ -1,8 +1,8 @@
-import {Frame} from "../../components/frame/Frame.tsx";
-import {Button} from "../../components/button/Button.tsx";
+import {Frame} from "@/components/frame/Frame.tsx";
+import {Button} from "@/components/button/Button.tsx";
 import {useCallback, useEffect, useState} from "react";
-import "../../App.css"
-import {LabeledInput} from "../../components/input/LabeledInput.tsx";
+import "@/App.css"
+import {LabeledInput} from "@/components/input/LabeledInput.tsx";
 
 type Props = {
     maxValue: string,

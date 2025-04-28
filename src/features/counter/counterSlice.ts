@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {CounterMode} from "./CounterModeChooser.tsx";
 import {AppThunk, RootState} from "@/app/store.ts";
-import {CounterStorageState, saveCounterStorageState} from "./localStorage.ts";
+import {counterLS, CounterStorageState} from "./localStorage.ts";
 
 export interface CounterState {
     maxValue: string
@@ -58,5 +58,5 @@ export const selectIsInputCompleted = (state: RootState) => state.counter.isInpu
 export const selectMode = (state: RootState) => state.counter.mode;
 
 export const saveCounterStorageStateThunk = (value: CounterStorageState): AppThunk => () => {
-    saveCounterStorageState(value)
+    counterLS.save(value);
 }
